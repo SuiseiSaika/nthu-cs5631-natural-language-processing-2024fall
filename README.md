@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Natural Language Processing (2024 Fall) - Prof. Hung-Yu Kao
 
 This repository contains all assignments and the final project for the "Natural Language Processing" course (Fall 2024) taught by Professor Hung-Yu Kao.
@@ -44,5 +43,3 @@ Participation in the "Eedi - Mining Misconceptions in Mathematics" Kaggle compet
 
 ---
 =======
-# nthu-cs5631-natural-language-processing-2024fall
->>>>>>> origin/main
