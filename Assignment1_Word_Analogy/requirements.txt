@@ -1,0 +1,11 @@
+nltk==3.9.1
+gensim==4.3.3
+
+tqdm==4.65.0
+numpy==1.22.2
+matplotlib==3.7.1
+
+# scikit-learn==1.2.0
+scikit-learn @ file:///rapids/scikit_learn-1.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+# pandas==1.5.2
+pandas @ file:///rapids/pandas-1.5.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
