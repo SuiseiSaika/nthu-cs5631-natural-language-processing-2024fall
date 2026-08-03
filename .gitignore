@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+
+**/cache/
+**/data/
+**/saved_models/
+**/*.ckpt
+**/*.model
+**/cat-facts.txt
+**/results*.json

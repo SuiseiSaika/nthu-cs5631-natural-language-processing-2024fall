@@ -1,5 +1,7 @@
 # CS563100 Natural Language Processing - Assignment 3: Multi-output Learning
 
+This assignment fine-tunes a shared BERT encoder for SemEval 2014 Task 1 with a relatedness regression head and a three-class entailment head. The implementation is published as [`main.py`](main.py), with plots and confusion matrices under [`images/`](images/).
+
 ## Experimental Setup
 
 **Running Environment:**
@@ -84,3 +86,10 @@ The best performing model utilized `google-bert/bert-base-uncased` with separate
 ## Reference
 
 Sample code / Data: [IKMLab Github](https://github.com/IKMLab/NTHU_Natural_Language_Processing/tree/main/Assignments/Assignment3)
+
+## Reproduction notes
+
+1. Install `requirements.txt` in a Python 3.8-compatible environment.
+2. Run `python main.py` from this directory.
+
+The script downloads the SemEval dataset and `google-bert/bert-base-uncased` through Hugging Face. Checkpoints are written to `saved_models/` and are intentionally ignored. A GPU is strongly recommended for the 20-epoch run. Reported metrics are retained from the tracked experiment report and were not rerun during cleanup.
