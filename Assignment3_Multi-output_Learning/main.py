@@ -1,4 +1,7 @@
+"""Multi-output BERT training for SemEval relatedness and entailment."""
+
 import os
+from pathlib import Path
 import numpy as np
 import transformers as T
 from datasets import load_dataset
@@ -9,6 +12,7 @@ from torch.optim import AdamW
 from tqdm import tqdm
 from torchmetrics import PearsonCorrCoef, SpearmanCorrCoef, Accuracy, F1Score
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
+PROJECT_DIR = Path(__file__).resolve().parent
 import matplotlib.pyplot as plt
 import random
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -52,16 +56,16 @@ lr = 3e-5
 epochs = 20
 train_batch_size = 16
 validation_batch_size = 8
-ckpt_path = '/workspace/NLP/HW3/saved_models'
+ckpt_path = PROJECT_DIR / 'saved_models'
+ckpt_path.mkdir(exist_ok=True)
 ckpt_name = f'batch_{train_batch_size}_p5_clamp_best.ckpt'
 plot_name = 'combined_plot_p5_clamp.png'
 
-# TODO2: Construct your model
+# Multi-output model with shared BERT representations.
 class MultiLabelModel(torch.nn.Module):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Write your code here
-        # Define what modules you will use in the model
+        # Define the shared encoder and task-specific heads.
         self.bert = T.BertModel.from_pretrained("google-bert/bert-base-uncased", cache_dir="./cache/")
         self.fc_common = torch.nn.Linear(768, 768)
         self.fc_relate = torch.nn.Linear(768, 1)
@@ -69,7 +73,7 @@ class MultiLabelModel(torch.nn.Module):
         # self.dropout = torch.nn.Dropout(0.5)
 
     def forward(self, **kwargs):
-        # Write your code here
+        # Produce relatedness and entailment outputs.
         # Forward pass
         outputs = self.bert(**kwargs)
         pooled_output = outputs.pooler_output  # shape (batch_size, hidden_size)
@@ -84,15 +88,14 @@ tokenizer = T.BertTokenizer.from_pretrained("google-bert/bert-base-uncased", cac
 
 tokenizer(data_sample[0]['premise'])['input_ids']
 
-# TODO1: Create batched data for DataLoader
+# Create batched data for the DataLoaders.
 # `collate_fn` is a function that defines how the data batch should be packed.
 # This function will be called in the DataLoader to pack the data batch.
 
 
 
 def collate_fn(batch):
-    # TODO1-1: Implement the collate_fn function
-    # Write your code here
+# Tokenize and collate one batch.
     # The input parameter is a data batch (tuple), and this function packs it into tensors.
     # Use tokenizer to pack tokenize and pack the data and its corresponding labels.
     # Return the data batch and labels for each sub-task.
@@ -103,7 +106,7 @@ def collate_fn(batch):
     entailment_judgments = torch.tensor([data['entailment_judgment'] for data in batch], dtype=torch.long)
     return inputs, relatedness_scores, entailment_judgments
 
-# TODO1-2: Define your DataLoader
+# Define the training, validation, and test DataLoaders.
 dl_train = DataLoader(SemevalDataset(split="train"),
             batch_size=train_batch_size,
             shuffle=True,
@@ -118,9 +121,8 @@ dl_test = DataLoader(SemevalDataset(split="test"),
             shuffle=False,
             collate_fn=collate_fn)
 
-# TODO3: Define your optimizer and loss function
+# Define the optimizer and task losses.
 # os.makedirs('./saved_models', exist_ok=True)
-# TODO3-1: Define your Optimizer
 optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
 
 
@@ -137,8 +139,6 @@ class FocalLoss(nn. Module):
 
         return focal_loss
     
-# TODO3-2: Define your loss functions (you should have two)
-# Write your code here
 relate_criterion = torch.nn.MSELoss()
 weights = torch.tensor([0.2, 0.30, 0.5], dtype=torch.float32).to(device)
 # Using focal loss
@@ -165,8 +165,7 @@ for ep in range(epochs):
     pbar = tqdm(dl_train)
     pbar.set_description(f"Training epoch [{ep+1}/{epochs}]")
     model.train()
-    # TODO4: Write the training loop
-    # Write your code here
+# Train the shared encoder and task heads.
     # train your model
 
     train_relatedness_preds = []
@@ -234,8 +233,7 @@ for ep in range(epochs):
     all_relatedness_labels = []
     all_entailment_preds = []
     all_entailment_labels = []
-    # TODO5: Write the evaluation loop
-    # Write your code here
+    # Evaluate on the validation split.
     # Evaluate your model
     # Output all the evaluation scores (SpearmanCorrCoef, Accuracy, F1Score)
 
@@ -289,7 +287,8 @@ for ep in range(epochs):
         best_performance = cur_performance
 
 
-workspace = '/workspace/NLP/HW3/figures'
+workspace = PROJECT_DIR / 'images'
+workspace.mkdir(exist_ok=True)
 
 labels = ["NEUTRAL", "ENTAILMENT", "CONTRADICTION"]
 
@@ -395,7 +394,7 @@ print([item.item() for item in train_f1_list])
 print([item.item() for item in valid_f1_list])
 
 """
-For test set predictions, you can write perform evaluation simlar to #TODO5.
+Test-set prediction follows the same evaluation structure as validation.
 """
 model.load_state_dict(torch.load(os.path.join(ckpt_path, ckpt_name), weights_only=True))
 model.eval()
@@ -408,8 +407,7 @@ all_relatedness_preds = []
 all_relatedness_labels = []
 all_entailment_preds = []
 all_entailment_labels = []
-# TODO5: Write the evaluation loop
-# Write your code here
+# Evaluate on the test split.
 # Evaluate your model
 # Output all the evaluation scores (SpearmanCorrCoef, Accuracy, F1Score)
 
