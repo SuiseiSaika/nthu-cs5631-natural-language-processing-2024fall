@@ -1,5 +1,7 @@
 # CS563100 Natural Language Processing - Assignment 2: Arithmetic as a Language
 
+This assignment treats arithmetic expressions as character sequences and compares vanilla RNN, GRU, and LSTM generation behavior. The tracked figures record learning-rate, model-family, sample-size, gradient-clipping, hidden-size, and out-of-distribution experiments.
+
 ## Experimental Setup
 
 **Running Environment:**
@@ -112,3 +114,11 @@ Increasing the hidden dimension of a two-layer LSTM from 256 to 512 resulted in 
 ## Reference
 
 Sample code / Data: [IKMLab Github](https://github.com/IKMLab/NTHU_Natural_Language_Processing/tree/main/Assignments/Assignment2)
+
+## Reproduction notes
+
+1. Install `requirements.txt` in a Python 3.8-compatible environment.
+2. Place `arithmetic_train.csv` and `arithmetic_eval.csv` in `data/`, or set `NLP_HW2_DATA_DIR` to the directory containing them.
+3. Run `python main.py` from this directory.
+
+The course CSV files are not redistributed here. Exact curves also depend on the original sampling, accelerator, and training configuration; the tracked plots are the authoritative record for the reported experiments.

@@ -1,5 +1,7 @@
 # CS563100 Natural Language Processing - Assignment 1: Word Analogy
 
+This assignment evaluates pretrained GloVe vectors and a custom Word2Vec model on the Google analogy benchmark, then visualizes family relationships with t-SNE. The implementation is in [`main.py`](main.py); tracked figures provide the evidence summarized below.
+
 ## Experimental Setup
 
 **Running Environment:**
@@ -110,3 +112,12 @@ Increasing the training data (higher sample rate) generally leads to better word
 ## Reference
 
 Sample code / Data: [IKMLab Github](https://github.com/IKMLab/NTHU_Natural_Language_Processing/tree/main/Assignments/Assignment1)
+
+## Reproduction notes
+
+1. Install `requirements.txt` in a Python 3.8-compatible environment.
+2. Place `questions-words.txt` beside `main.py`.
+3. To run the custom model section, also place the prepared `wiki_texts_combined.txt` corpus beside the script.
+4. Run `python main.py` from this directory.
+
+The script downloads pretrained GloVe vectors and NLTK resources on first use. The Wikipedia corpus and generated Word2Vec weights are intentionally not tracked. Because the file retains the original sequential experiment layout, a full run is compute- and memory-intensive.
